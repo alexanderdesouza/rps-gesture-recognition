@@ -1,0 +1,13 @@
+pandas
+redis
+requests
+argparse
+numpy
+redis
+keras
+pillow
+h5py
+flask_cors
+opencv-python
+theano
+sklearn

@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+
+<!-- ========================= Document Meta-Data ========================== -->
+<head>
+
+    <meta charset="utf-8">
+    <meta name="author" content="ING Wholesale Banking Advanced Analytics">
+    <meta name="description" content="data visualization ING's Financial Markets">
+    <meta name="keywords" content="tbd">
+
+    <title>ING - RPS</title>
+
+    <link rel="stylesheet" type="text/css" href="./css/index.css">
+    <!--
+    <link rel="stylesheet" type="text/css" href="./static/css/visualization.css">
+    <link rel="stylesheet" type="text/css" href="./static/css/optionsmenu.css">
+    -->
+
+    <script src="./js/ext/d3.min.js"></script>
+    <script src="./js/ext/d3-queue.v3.min.js"></script>
+    <script src="./js/ext/angular.min.js"></script>
+
+    <!--
+    <script src="./static/js/wsmessaging.js"></script>
+    <script src="./static/js/queue.js"></script>
+    <script src="./static/js/visualization.js"></script>
+    -->
+
+    <script src="./js/ext/jquery.min.js"></script>
+</head>
+
+<!-- =================== Beginning of HTML Document Body =================== -->
+<body ng-app="RPS">
+
+<div ng-controller="rpsCtrl">
+
+<div class="container">
+
+  <!-- ===== Top Title Pane ===== -->
+  <div id="titlePane" class="titlePane">
+
+    <text id="titleText">Rock Paper Scissors</text>
+
+  </div>
+
+
+  <!-- ===== Name Pane ===== -->
+  <div id="playerPane" class="namePane" style="left:0%">
+
+    <text id="playerNameText">Player X</text>
+
+  </div>
+
+
+  <div id="turnPane" class="namePane" style="left:30%">
+
+    <text id="turnText">Turn</text>
+
+  </div>
+
+
+  <div id="aiNamePane" class="namePane" style="left:60%">
+
+    <text id="aiNameText">Alpha_PRS</text>
+
+  </div>
+
+
+  <!-- ===== Counter Pane ===== -->
+
+  <div id="playerCounterPane" class="counterPane" style="left:0%">
+
+    <text id="playerCounterText">{{winNrPlayer}}</text>
+
+  </div>
+
+  <div id="turnCounterPane" class="counterPane" style="left:30%">
+
+    <text id="turnCounterText">{{nrTurns}}</text>
+
+  </div>
+
+  <div id="aiCounterPane" class="counterPane" style="left:60%">
+
+    <text id="aiCounterText">{{winNrAI}}</text>
+
+  </div>
+
+
+
+
+
+  <!-- ===== Main Pane ===== -->
+  <div id="mainPane" class="mainPane">
+
+    <!-- == Player Pane == -->
+    <div id="playerPane" class="playerPane" style="left:3%">
+
+      <video autoplay width="100%"></video>
+
+    </div>
+
+    <!-- == AI Pane == -->
+    <div id="playerHandPane" class="playerHandPane" style="left:25%">
+            <img ng-src={{playerHandImg}} height="auto" width="100%"></img>
+    </div>
+
+
+    <!-- == 321 Pane == -->
+    <div id="numberImgPane" class="numberImgPane" style="left:40%">
+
+      <img ng-src={{numberImg}} height="auto" width="100%"></img>
+
+    </div>
+
+
+    <!-- == AI Pane == -->
+    <div id="aiPane" class="aiPane" style="left:65%">
+
+      <img ng-src={{aiImg}} height="auto" width="100%"></img>
+
+    </div>
+
+  </div>
+
+
+  <div id="winLoseImgPane" class="winLoseImgPane" style="left:35%">
+
+          <img ng-src={{winLoseImg}} height="auto" width="100%"></img>
+
+  </div>
+
+
+  <button class="button" ng-click="startGame()"
+          ng-keydown="[13, 32].includes($event.keyCode) && startGame()"
+          style="position:relative;top:650px;left: 40%;">
+          Start!
+  </button>
+
+
+
+
+  <!-- ===== Bottom Pane Footer ===== -->
+  <div id="footerPane" class="footerPane">
+
+    <table width="80%;" style="margin-left:10%">
+      <tr>
+        <td width="33%" style="text-align:left;">
+        </td>
+        <td width="33%" style="text-align:center;">
+          <img alt="ING" style="height:5%;" src="./img/inglogo.png" />
+          <p class="footer">powered by wholesale banking advanced analytics</p>
+        </td>
+        <td width="33%" style="text-align:right;">
+        </td>
+      </tr>
+    </table>
+
+  </div>
+
+</div>
+
+</div>
+
+<script>
+
+
+
+
+var video = document.querySelector('video');
+
+var errorCallback = function(e) {
+  console.log('Wasted!', e);
+};
+
+
+video.style.cssText = "-moz-transform: scale(-1, 1); \
+-webkit-transform: scale(-1, 1); -o-transform: scale(-1, 1); \
+transform: scale(-1, 1); filter: FlipH;";
+
+// Not showing vendor prefixes or code that works cross-browser:
+navigator.getUserMedia({video: true}, function(stream) {
+  video.src = window.URL.createObjectURL(stream);
+  localMediaStream = stream;
+}, errorCallback);
+
+
+
+
+
+
+var app = angular.module('RPS', []);
+
+
+
+app.controller('rpsCtrl', ['$scope', '$timeout', '$http', function($scope, $timeout, $http) {
+    $scope.ai_ip = "http://127.0.0.1:5000/";
+
+    $scope.aiImg = "img/rock.png";
+    $scope.numberImg = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
+    $scope.winLoseImg = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
+    $scope.playerHandImg = "img/paper.png";
+
+    $scope.winNrPlayer = 0;
+    $scope.nrTurns = 0;
+    $scope.winNrAI = 0;
+
+    $scope.maxNrTurn = 5;
+
+    $scope.previousHand = "";
+
+    $scope.counter = 0;
+
+    document.body.onkeydown = function(e){
+      if (e.keyCode == 13 || e.keyCode == 32){
+        $scope.startGame();
+      }
+
+    };
+
+
+    $scope.startGame = function() {
+
+      console.log($scope.counter);
+
+      if ($scope.counter <= 0) {
+
+        $scope.winLoseImg = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
+
+        var get_ai_url = $scope.ai_ip + "newGame"
+        if ($scope.previousHand != ""){
+          get_ai_url = $scope.ai_ip + "getAction/" + $scope.previousHand
+        }
+
+        $http({
+            method : "GET",
+            url : get_ai_url
+        }).then(function mySuccess(response) {
+            console.log('Start AI successfully!')
+
+            $scope.gameCounter = 0;
+
+
+            // while ($scope.gameCounter<$scope.maxNrTurn){
+              $scope.aiImg = "img/RPS.gif";
+
+              console.log("Game " + $scope.gameCounter);
+
+              // show animation 3/2/1!!!
+              $scope.show3seconds();
+
+              $scope.nrTurns++;
+              $scope.gameCounter++;
+            // }
+
+        }, function myError(response) {
+            console.log('Start AI failed!');
+        });
+
+      }
+
+
+
+
+    };
+
+    function sleep (time) {
+      return new Promise((resolve) => setTimeout(resolve, time));
+    }
+
+    $scope.show3seconds = function() {
+      $scope.counter = 3;
+      $scope.numberImg = "img/" + $scope.counter + ".png"
+
+      // Usage!
+      sleep(1000).then(() => {
+          $scope.counter--;
+          $scope.numberImg = "img/" + $scope.counter + ".png"
+
+          sleep(1000).then(() => {
+              $scope.counter--;
+              $scope.numberImg = "img/" + $scope.counter + ".png"
+
+              sleep(1000).then(() => {
+                    $scope.counter--;
+                    $scope.numberImg = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
+
+                    // get player hand
+                    if ($scope.playerHand == "") {
+                      console.log("Cannot get player hand! Restart!!!");
+                      return;
+                    }
+                    console.log("Get player hand from backend server: " + $scope.playerHand);
+
+                    // get ai hand
+                    // get player hand
+                    var aiHand = "";
+                    var url = "";
+                    if ($scope.previousHand === ""){
+                        url = $scope.ai_ip + "getAction";
+                    } else {
+                        url = $scope.ai_ip + "getAction/" + $scope.previousHand;
+                    }
+
+                    $http({
+                        method : "GET",
+                        url : url
+                    }).then(function mySuccess(response) {
+                        console.log('Get AI hand successfully!')
+                        aiHand = response.data;
+                        console.log("Get ai hand from backend server: " + aiHand);
+
+                        $scope.aiImg = "img/" + aiHand + ".png";
+
+                        // judge
+                        var playerHand = $scope.playerHand; //.slice(2, $scope.playerHand.length - 1)
+                        var result = $scope.judge(playerHand, aiHand);
+                        $scope.winLoseImg = "img/" + result + ".png";
+                        $scope.previousHand = $scope.playerHand;
+
+                        console.log("Game Finished!");
+
+                    }, function myError(response) {
+                        aiHand = $scope.getAIHand($scope.previousHand);
+                        console.log("Get ai hand randomly! " + aiHand);
+                        $scope.aiImg = "img/" + aiHand + ".png";
+
+                        // judge
+                        var result = $scope.judge($scope.playerHand, aiHand);
+                        $scope.winLoseImg = "img/" + result + ".png";
+                        console.log("Result: " + result);
+
+                        $scope.previousHand = $scope.playerHand;
+
+                        console.log("Game Finished!");
+                    });
+
+              });
+
+          });
+
+      });
+    };
+
+    $scope.tellBackendNewGame = function(){
+      $http({
+          method : "GET",
+          url : $scope.ai_ip + "newGame"
+      }).then(function mySuccess(response) {
+          console.log('Start AI successfully!')
+      }, function myError(response) {
+          console.log('Start AI failed!');
+      });
+    };
+
+
+    // $scope.getPlayerHand = function(){
+    //   var playerHand = $scope.getRandHand()
+    //   console.log("Get player hand: " + playerHand);
+    //   return playerHand;
+    // };
+
+    $scope.getAIHand = function(previousHand){
+
+      $http({
+          method : "GET",
+          url : $scope.ai_ip + "newGame"
+      }).then(function mySuccess(response) {
+          console.log('Start AI successfully!')
+          console.log(response);
+      }, function myError(response) {
+          console.log('Start AI failed!');
+      });
+
+
+      var aiHand = $scope.getRandHand()
+      console.log("Get AI hand: " + aiHand);
+      return aiHand;
+    };
+
+
+    $scope.getRandHand = function() {
+      var rpsArray = ["paper", "rock", "scissors"];
+      return rpsArray[Math.floor(Math.random() * rpsArray.length)];
+    };
+
+    $scope.judge = function(playerHand, aiHand) {
+        if (playerHand == "") {
+          console.log("Judge funciton: why input empty player hand");
+          return ""
+        }
+
+        if (aiHand == "") {
+          console.log("Judge funciton: why input empty AI hand");
+          return ""
+        }
+
+        if ((playerHand == "paper" && aiHand == "rock") ||
+            (playerHand == "rock" && aiHand == "scissors") ||
+            (playerHand == "scissors" && aiHand == "paper")
+        ) {
+          console.log("Judge funciton: human win!");
+          $scope.winNrPlayer++;
+          return "win";
+        }
+
+        if ((playerHand == "paper" && aiHand == "scissors") ||
+            (playerHand == "rock" && aiHand == "paper") ||
+            (playerHand == "scissors" && aiHand == "rock")
+        ) {
+          console.log("Judge funciton: human lose!");
+          $scope.winNrAI++;
+          return "lose";
+        }
+
+        if ((playerHand == "paper" && aiHand == "paper") ||
+            (playerHand == "rock" && aiHand == "rock") ||
+            (playerHand == "scissors" && aiHand == "scissors")
+        ) {
+          console.log("Judge funciton: draw game!");
+          return "draw";
+        }
+
+    };
+
+    $scope.getRealTimeResult = function() {
+      $http({
+          method : "GET",
+          url : "http://127.0.0.1:9998/get",
+          headers: {
+            'Content-type': 'application/json'
+          }
+      }).then(function mySuccess(response) {
+
+          $scope.playerHand = response.data.hand;
+          $scope.playerHandImg = "img/" + response.data.hand + ".png";
+          $timeout($scope.getRealTimeResult, 250);
+      }, function myError(error, status) {
+          console.log('why: get player hand wrong! ');
+          console.log(error, status);
+          $timeout($scope.getRealTimeResult, 250);
+      });
+
+
+
+    };
+
+    angular.element(document).ready(function () {
+
+      $scope.getRealTimeResult();
+
+
+    });
+
+
+
+
+}]);
+
+
+
+</script>
+
+</body>
+<!-- ===================== End of HTML Document Body ======================= -->

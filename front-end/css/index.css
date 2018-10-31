@@ -1,0 +1,193 @@
+/*
+    index.css
+    This is the primary cascading style sheet specification for the entire
+    frontend, between queue.html and main.html. The color scheme for this
+    project can be inspected easily at
+    https://coolors.co/fffeff-67b5d1-16db65-d7263d-02182b.
+
+    @author  Wholesale Banking Advanced Analytics
+    @update  21.10.2016
+ */
+
+:root {
+  --primaryText: #ffffff;     /* white          */
+  --secondaryText: #a8a8a8;   /* light gray     */
+  --lostTrade: #d7263d;       /* malachite      */
+  --wonTrade: #16db65;        /* rusty red      */
+  --objectHighlight: #67b5d1; /* iceberg        */
+  --bgColor: #02182b;         /* maastrict blue */
+  --bgMenuColor: #22333b;     /* gun metal      */
+}
+
+@font-face {
+  font-family: "CrackandBold";
+  src: url("./crackandbold.ttf");
+}
+
+body {
+
+  padding: 0px;
+  margin: 0px;
+  overflow-x: hidden;
+
+  background-color: var(--bgColor);
+
+  color: var(--secondaryText);
+  font-family: "Trebuchet MS", Helvetica, sans-serif;
+  font-size: 14px;
+
+}
+
+
+.titlePane {
+
+  height: 66px;
+  width: 100%;
+
+  top: 33px;
+  position: fixed;
+
+  background-color: var(--bgColor);
+
+  text-align: center;
+
+}
+
+.titlePane #titleText {
+  color: var(--primaryText);
+  font-family: "CrackandBold";
+  font-size: 64px;
+  letter-spacing: 8px;
+}
+
+
+.namePane {
+  height: 33px;
+  width: 30%;
+
+  top: 130px;
+  position: fixed;
+
+  background-color: var(--bgColor);
+
+  text-align: center;
+
+}
+
+.namePane text {
+  color: var(--primaryText);
+  font-family: "CrackandBold";
+  font-size: 48px;
+  letter-spacing: 8px;
+  text-align: center;
+}
+
+.counterPane {
+
+  height: 33px;
+  width: 30%;
+
+  top: 220px;
+  position: fixed;
+
+  background-color: var(--bgColor);
+
+  text-align: center;
+
+}
+
+.counterPane text {
+  color: var(--primaryText);
+  font-family: "CrackandBold";
+  font-size: 48px;
+  letter-spacing: 8px;
+  text-align: center;
+}
+
+
+
+
+.mainPane {
+  top: 200px;
+  position: fixed;
+  width: 80%;
+  height: auto;
+  margin-left: 10%;
+}
+
+.playerPane {
+  width: 30%;
+  height: auto;
+  top: 300px;
+  bottom: 100px;
+  position: fixed;
+  overflow-y: auto;
+}
+
+.playerHandPane {
+  width: 10%;
+  height: auto;
+  top: 550px;
+  bottom: 50px;
+  position: fixed;
+  overflow-y: auto;
+}
+
+
+.numberImgPane {
+  width: auto;
+  height: auto;
+  top: 300px;
+  bottom: 100px;
+  position: fixed;
+  overflow-y: auto;
+}
+
+.winLoseImgPane {
+  width: auto;
+  height: auto;
+  top: 300px;
+  bottom: 100px;
+  position: fixed;
+  overflow-y: auto;
+}
+
+
+.aiPane {
+  width: 30%;
+  height: auto;
+  top: 320px;
+  bottom: 100px;
+  position: fixed;
+  overflow-y: auto;
+}
+
+
+.button {
+    height: 50px;
+    width: 10%;
+
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+
+.footerPane {
+
+  width: 100%;
+  height: 66px;
+
+  bottom: 0px;
+  position: fixed;
+
+  background-color: var(--bgColor);
+
+  font-style: italic;
+  font-size: 12px;
+
+}

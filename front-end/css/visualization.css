@@ -1,0 +1,93 @@
+/*
+    visualization.css
+    This is the cascading style sheets specification for the main visualization
+    area and script, main.html and visualization.js. The main color scheme for
+    this project is :
+       White          - #ffffff (prominent text)
+       Light Gray     - #a8a8a8 (background text, such as axes for example)
+       Malachite      - #16db65 (RFQ buttons and won trades)
+       Rusty Red      - #d7263d (lost trades)
+       Iceberg        - #67b5d1 (object highlighting)
+       Maastrict Blue - #02182b (background screen color)
+    Colors derived at https://coolors.co/fffeff-67b5d1-16db65-d7263d-02182b.
+
+    @author  Wholesale Banking Advanced Analytics
+    @update  18.10.2016
+ */
+
+.axis path,
+.axis line  {
+  fill: none;
+  stroke: #a8a8a8;
+  shape-rendering: crispEdges;
+}
+
+.axis text {
+  fill: #a8a8a8;
+}
+
+.grid .tick {
+  stroke: #a8a8a8;
+  opacity: 0.66;
+}
+
+text.axisLabel {
+  fill: #a8a8a8;
+  text-anchor: middle;
+}
+
+line.refLine-BBG {
+  stroke-width: 2;
+  stroke-dasharray: 3, 4;
+  stroke: #67b5d1;
+}
+
+line.refLine-ING {
+  stroke-width: 2;
+  stroke-dasharray: 3, 4;
+  stroke: #ff6600;
+}
+
+text.refLineText {
+  stroke: none;
+  fill: #67b5d1;
+  text-anchor: middle;
+  font-variant: small-caps;
+}
+
+.bubble {
+  stroke: none;
+}
+
+.focus {
+  stroke: #67b5d1;
+  stroke-width: 2;
+  fill: none;
+}
+
+div.tooltip {
+
+  position: absolute;
+  width: auto;
+  height: auto;
+  padding: 4px;
+
+  background: #22333b;
+  border: 0px;
+  border-radius: 8px;
+  pointer-events: none;
+
+  color: #ffffff;
+  text-align: center;
+  font-size: 12px;
+
+}
+
+.pricer line, circle, polyline {
+  stroke: #ffffff;
+  stroke-width: 2;
+}
+
+.pricer text {
+  fill: #ffffff;
+}

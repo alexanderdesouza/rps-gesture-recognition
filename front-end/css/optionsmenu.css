@@ -1,0 +1,132 @@
+/*
+    optionsmenu.css
+    This is the cascading style sheet specification for the visualization
+    options menu that appears at the bottom of main.html. It includes stylings
+    to mask and then show the main content area when the menu is active and
+    subsequently collapsed, as well as for the menu content itself.
+
+    @author  Wholesale Banking Advanced Analytics
+    @update  26.10.2016
+ */
+
+/*  Root Variable Declarations :
+ */
+
+:root {
+  --optionsMenuHeight: 300px;
+}
+
+/*  optionsMenuWrapper Specifications :
+ */
+.optionsMenuWrapper {
+  text-align: center;
+  margin-left: -75px;
+}
+
+.optionsMenuWrapper.has-push-bottom {
+  transform: translateY(-var(--optionsMenuHeight));
+}
+
+/*  optionsButton Specifications :
+ */
+.optionsButton {
+
+  width: 75px;
+  height: 33px;
+
+  border: 1px solid var(--bgMenuColor);
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+
+  padding: 0;
+
+  bottom: 0px;
+  position: fixed;
+
+  background-color: var(--bgMenuColor);
+  background-image: -webkit-linear-gradient(top, var(--bgMenuColor), #102636);
+  background-image: -moz-linear-gradient(top, var(--bgMenuColor), #102636);
+  background-image: -ms-linear-gradient(top, var(--bgMenuColor), #102636);
+  background-image: -o-linear-gradient(top, var(--bgMenuColor), #102636);
+  background-image: linear-gradient(top, var(--bgMenuColor), #102636);
+
+  font-size: 11px;
+  color: #a8a8a8;
+  text-align: center;
+  vertical-align: top;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+
+}
+
+.optionsButton:hover {
+
+  border: 1px solid var(--bgMenuColor);
+
+  background-color: var(--bgMenuColor);
+  background-image: linear-gradient(top, var(--bgMenuColor), #001931);
+  background-image: -webkit-linear-gradient(top, var(--bgMenuColor), #001931);
+  background-image: -moz-linear-gradient(top, var(--bgMenuColor), #001931);
+  background-image: -ms-linear-gradient(top, var(--bgMenuColor), #001931);
+  background-image: -o-linear-gradient(top, var(--bgMenuColor), #001931);
+
+  box-shadow: 0 1px 1px rgba(0,0,0,.1);
+  -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.1);
+  -moz-box-shadow: 0 1px 1px rgba(0,0,0,.1);
+
+}
+
+.optionsButton:active {
+ outline: none;
+}
+
+/*  optionsMenu Specifications :
+ */
+.optionsMenu {
+
+  position: fixed;
+  width: 100%;
+  height: var(--optionsMenuHeight);
+  z-index: 200;
+
+  bottom: 0px;
+
+  background-color: var(--bgMenuColor);
+
+  display: inline-block;
+  vertical-align: middle;
+  text-align: center;
+  font-style: normal;
+  color: #ffffff;
+
+  overflow-x: scroll;
+  transform: translateY(var(--optionsMenuHeight));
+  transition: transform 0.3s;
+
+}
+
+.optionsMenu.is-active {
+  transform: translateY(20px);
+}
+
+/*  Mask component :
+ */
+.optionsMenuMask {
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  width: 0;
+  height: 0;
+  background-color: #000000;
+  opacity: 0;
+  transition: opacity 0.3s, width 0s 0.3s, height 0s 0.3s;
+}
+
+.optionsMenuMask.is-active {
+  width: 100%;
+  height: 100%;
+  opacity: 0.5;
+  transition: opacity 0.3s;
+}
